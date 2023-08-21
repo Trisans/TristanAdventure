@@ -2,6 +2,7 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import org.w3c.dom.css.Rect;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,6 +14,8 @@ public class Player extends Entity {
 	
 	GamePanel gp;
 	KeyHandler keyH;
+	public int SCREEN_X_PX;
+	public int SCREEN_Y_PX;
 	public Player(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
 		this.keyH = keyH;
@@ -21,11 +24,15 @@ public class Player extends Entity {
 		getPlayerImage();
 	}
 	public void setDefaultValues() {
-		x = 100;
-		y = 100;
+		worldX_px = gp.TILE_SIZE * 10;
+		worldY_px = gp.TILE_SIZE * 10;
+		SCREEN_X_PX = gp.MAX_SCREEN_COL * (gp.TILE_SIZE / 2) - (gp.TILE_SIZE / 2);
+		SCREEN_Y_PX = gp.MAX_SCREEN_ROW * (gp.TILE_SIZE / 2) - (gp.TILE_SIZE / 2);
 		speed = 4;
 		direction = "down";
 		isMoving = false;
+		solidArea = new Rectangle(SCREEN_X_PX + 9, SCREEN_Y_PX + 33, 30, 12);
+		
 	}
 	
 	public void getPlayerImage() {
@@ -53,48 +60,63 @@ public class Player extends Entity {
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
 			// if any movement keys are being pressed
 			isMoving = true;
-			if ((keyH.upPressed || keyH.downPressed) && (keyH.leftPressed || keyH.rightPressed)) { // moving diagonally
-				// reduce player speed so moving diagonally does not increase speed
-				tempSpeed = speed / Math.sqrt(2);
-			}
-			
+//			if ((keyH.upPressed || keyH.downPressed) && (keyH.leftPressed || keyH.rightPressed)) { // moving diagonally
+//				// reduce player speed so moving diagonally does not increase speed
+//				tempSpeed = speed / Math.sqrt(2);
+//			}
+			// move player
 			if (keyH.upPressed) {
 				direction = "up";
-				y -= tempSpeed;
 			} else if (keyH.downPressed) {
 				direction = "down";
-				y += tempSpeed;
 			}
-			if (keyH.leftPressed) {
+			else if (keyH.leftPressed) {
 				direction = "left";
-				x -= tempSpeed;
+				
 			} else if (keyH.rightPressed) {
 				direction = "right";
-				x += tempSpeed;
 			}
-			spriteCounter++;
-			if (spriteCounter > 10) { // change sprite every 10 frames because update is called 60 times per second
-				switch (spriteNum) {
-					case 1:
-						spriteNum = 2;
-						break;
-					case 2:
-						spriteNum = 1;
-						break;
+			
+			// check collision
+			collisionOn = false;
+			gp.cChecker.checkTile(this);
+//			System.out.println(collisionOn);
+			
+			if (!collisionOn) {
+				if (keyH.upPressed) {
+					worldY_px -= tempSpeed;
+				} else if (keyH.downPressed) {
+					worldY_px += tempSpeed;
 				}
-				spriteCounter = 0;
+				else if (keyH.leftPressed) {
+					worldX_px -= tempSpeed;
+				} else if (keyH.rightPressed) {
+					worldX_px += tempSpeed;
+				}
+				
+				// update sprite
+				spriteCounter++;
+				if (spriteCounter > 6) { // change sprite every 10 frames because update is called 60 times per second
+					switch (spriteNum) {
+						case 1:
+							spriteNum = 2;
+							break;
+						case 2:
+							spriteNum = 1;
+							break;
+					}
+					spriteCounter = 0;
+				}
 			}
+			
+			
 		} else {
 			isMoving = false;
 		}
 	}
 	public void draw(Graphics2D g2) {
-//		g2.setColor(Color.white);
-//
-//		g2.fillRect(x, y, gp.TILE_SIZE, gp.TILE_SIZE);
-		
 		BufferedImage image = null;
-		
+//		System.out.println("X: " + (worldX_px / gp.TILE_SIZE) + ", Y: " + (worldY_px / gp.TILE_SIZE));
 		if (isMoving) {
 			switch (direction) {
 				case "up":
@@ -131,8 +153,10 @@ public class Player extends Entity {
 					image = right1;
 					break;
 			}
+			spriteCounter = 0;
 		}
 		
-		g2.drawImage(image, x, y, gp.TILE_SIZE, gp.TILE_SIZE, null);
+		g2.drawImage(image, SCREEN_X_PX, SCREEN_Y_PX, gp.TILE_SIZE, gp.TILE_SIZE, null);
+		g2.fillRect(SCREEN_X_PX + 9, SCREEN_Y_PX + 33, 30, 12);
 	}
 }
