@@ -19,8 +19,6 @@ public class GamePanel extends JPanel implements Runnable {
     
     public final int MAX_WORLD_ROW = 50;
     public final int MAX_WORLD_COL = 50;
-    public final int WORLD_WIDTH_PX = MAX_WORLD_COL * TILE_SIZE;
-    public final int WORLD_HEIGHT_PX = MAX_WORLD_ROW * TILE_SIZE;
 
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
@@ -48,7 +46,8 @@ public class GamePanel extends JPanel implements Runnable {
     public void run() {
         
         double drawInterval = 1000000000 / FPS;
-        double nextDrawTime = System.nanoTime() + drawInterval; // when System.nanoTime() = nextDrawTime, draw the screen again
+        double nextDrawTime = System.nanoTime() + drawInterval; // when System.nanoTime() = nextDrawTime,
+        // draw the screen again
 
         while (gameThread.isAlive()) {
             double startTime = System.nanoTime();
@@ -58,7 +57,8 @@ public class GamePanel extends JPanel implements Runnable {
     
             try { // all this code maintains fps
                 
-                double remainingTime = (nextDrawTime - System.nanoTime()) / 1000000; // = 0.016 seconds - time update() and repaint() take, in milliseconds
+                double remainingTime = (nextDrawTime - System.nanoTime()) / 1000000; // = 0.016 seconds - time update()
+                // and repaint() take, in milliseconds
                 
                 if (remainingTime < 0) {
                     remainingTime = 0;

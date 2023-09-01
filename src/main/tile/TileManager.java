@@ -24,7 +24,8 @@ public class TileManager {
 		"/tiles/tree_1.png",            // 4
 		"/tiles/dirt_1.png",            // 5
 		"/tiles/grass_flowered_1.png",  // 6
-		"/tiles/marker.png"             // 7
+		"/tiles/marker.png",            // 7
+		"/tiles/tree_1_sand.png"        // 8
 	};
 	
 	public TileManager(GamePanel gp) {
@@ -33,7 +34,7 @@ public class TileManager {
 		tiles = new Tile[10];
 		map = new int[gp.MAX_WORLD_ROW][gp.MAX_WORLD_COL];
 		getTileImage();
-		loadMap("/maps/world01.txt");
+		loadMap("/maps/world01-2.txt");
 	}
 	
 	public void getTileImage() {
@@ -45,8 +46,9 @@ public class TileManager {
 			}
 			// set collision
 			tiles[1].collision = true; // gray brick
-			tiles[2].collision = true; // water
+//			tiles[2].collision = true; // water
 			tiles[4].collision = true; // tree
+			tiles[8].collision = true;
 			System.out.println(tiles[3].collision);
 		} catch (IOException e) {
 			e.printStackTrace();
