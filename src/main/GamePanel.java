@@ -2,6 +2,8 @@ package main;
 
 import entity.Player;
 import main.tile.TileManager;
+import object.ObjectManager;
+import object.SuperObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +27,8 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread; // when this thread is created, the run method is automatically called
     public Player player = new Player(this, keyH);
     public CollisionChecker cChecker = new CollisionChecker(this);
-    
+    public ObjectManager objManager = new ObjectManager(this);
+    public SuperObject obj[] = new SuperObject[10];
     // FPS
     final int FPS = 60;
 
@@ -35,6 +38,11 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true); // improves rendering performance
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        this.setup();
+    }
+    
+    public void setup() {
+        objManager.setObject();
     }
 
     public void startGameThread() {
@@ -83,6 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g; // cast g to a 2D graphics graph
         
         tileM.draw(g2); // draw tiles before player because tiles are on the bottom layer
+        objManager.draw(g2);
         player.draw(g2);
         
 

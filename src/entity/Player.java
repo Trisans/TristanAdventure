@@ -65,7 +65,7 @@ public class Player extends Entity {
 				// reduce player speed so moving diagonally does not increase speed
 				tempSpeed = speed / Math.sqrt(2);
 			}
-			System.out.println(tempSpeed);
+//			System.out.println(tempSpeed);
 			// update player direction
 			if (keyH.upPressed) {
 				direction = "up";
